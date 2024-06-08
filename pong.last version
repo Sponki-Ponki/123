@@ -1,0 +1,95 @@
+#include <stdio.h>
+
+#define WIDTH 80                   // ширина поля
+#define HEIGHT 25                  // высота поля
+#define BALL_START_X (WIDTH / 2)   // старт мяча по х
+#define BALL_START_Y (HEIGHT / 2)  // старт мяча по y
+#define SCORE_X 33                 // координаты очков по х
+#define SCORE_Y 3                  // координаты очков по y
+#define ROCKET_1_X 1               // левая ракетка по х
+#define ROCKET_2_X (WIDTH - 2)     // правая ракетка по х
+#define ROCKET_1_Y 12              // левая ракетка по y
+#define ROCKET_2_Y 12              // правая ракетка по y
+#define VECTOR_X -1
+#define VECTOR_Y 1
+#define WIN 21
+
+void paint(int ball_x, int ball_y, int rocket_1_x, int rocket_1_y, int rocket_2_x, int rocket_2_y);
+int clamp(int value, int min, int max);
+
+int main() {
+    int player_1 = 0;
+    int player_2 = 0;
+    int rocket_1_x = ROCKET_1_X;
+    int rocket_1_y = ROCKET_1_Y;
+    int rocket_2_x = ROCKET_2_X;
+    int rocket_2_y = ROCKET_2_Y;
+    int ball_x = BALL_START_X;
+    int ball_y = BALL_START_Y;
+    char key = 48;
+
+    while (1) {
+        if (key > 0) {
+            paint(ball_x, ball_y, rocket_1_x, rocket_1_y, rocket_2_x,
+                  rocket_2_y);  // функция, которая рисует поле
+            printf("score %d : %d\n", player_1, player_2);
+        }
+        key = getchar();
+
+        if (key == 'A') {
+            rocket_1_y--;
+        } else if (key == 'Z') {
+            rocket_1_y++;
+        } else if (key == 'K') {
+            rocket_2_y--;
+        } else if (key == 'M') {
+            rocket_2_y++;
+        } else {
+            key = 0;
+        }
+
+        rocket_1_y = clamp(rocket_1_y, 2, HEIGHT - 3);
+        rocket_2_y = clamp(rocket_2_y, 2, HEIGHT - 3);
+    }
+    // написать функцию для движения мяча
+    // написать функцию для движения ракеток
+}
+
+void paint(int ball_x, int ball_y, int rocket_1_x, int rocket_1_y, int rocket_2_x, int rocket_2_y) {
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
+            if ((x == ROCKET_1_X) && ((y == rocket_1_y - 1) || (y == rocket_1_y) ||
+                                      (y == rocket_1_y + 1)) ||  // нарисовали положение левой ракетки
+                (x == ROCKET_2_X) && ((y == rocket_2_y - 1) || (y == rocket_2_y) ||
+                                      (y == rocket_2_y + 1))) {  // нарисовали положение второй ракетки
+                printf("|");
+            } else if (x == ball_x && y == ball_y) {  // нарисовали мяч
+                printf("o");
+            } else if ((y == 0 && x != 0 && y != WIDTH) ||
+                       (y == HEIGHT - 1 && x != 0 &&
+                        x != WIDTH - 1)) {  // нарисовали верхнюю и нижнюю границу
+                printf("-");
+            } else if ((x == 0 && y != 0 && y != HEIGHT) ||
+                       (x == WIDTH - 1 && x != 0 && y != HEIGHT - 1 && y != 3) ||
+                       ((x == WIDTH / 2) && (y != 3)) ||
+                       (x == WIDTH - 1 && y == 3)) {  // нарисовали левую и правую границу
+                printf("|");
+            } else if ((x == WIDTH / 2 && y == 3)) {  // нарисовали середину
+                printf("|");
+            } else {
+                printf(" ");  // заполняем пробелами
+            }
+        }
+        printf("\n");  // переносим на новую стоку
+    }
+}
+
+int clamp(int value, int min, int max) {
+    int flag = value;
+    if (value < min) {
+        flag = min;
+    } else if (value > max) {
+        flag = max;
+    }
+    return flag;
+}
