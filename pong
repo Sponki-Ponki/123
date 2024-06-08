@@ -1,0 +1,67 @@
+#include <stdio.h>
+
+#define WIDTH 80                   // ширина поля
+#define HEIGHT 25                  // высота поля
+#define BALL_START_X (WIDTH / 2)   // старт мяча по х
+#define BALL_START_Y (HEIGHT / 2)  // старт мяча по y
+#define SCORE_X 33                 // координаты очков по х
+#define SCORE_Y 3                  // координаты очков по y
+#define ROCKET_1_X 1               // левая ракетка по х
+#define ROCKET_2_X (WIDTH - 2)     // правая ракетка по х
+#define ROCKET_1_Y 12              // левая ракетка по y
+#define ROCKET_2_Y 12              // правая ракетка по y
+#define VECTOR_X -1
+#define VECTOR_Y 1
+#define WIN 21
+
+void paint(int ball_x, int ball_y);
+// тут объявляем функцию для движения ракетки и мяча
+
+int main() {
+    int player_1 = 0;
+    int player_2 = 0;
+    int rocket_1_x = ROCKET_1_X;
+    int rocket_1_y = ROCKET_1_Y;
+    int rocket_2_x = ROCKET_2_X;
+    int rocket_2_y = ROCKET_2_Y;
+    int ball_x = BALL_START_X;
+    int ball_y = BALL_START_Y;
+    char key;
+
+    paint(ball_x, ball_y); //функция, которая рисует поле
+    printf("%s %d : %d", "score:", player_1, player_2);
+
+    //написать функцию для движения мяча
+    //написать функцию для движения ракеток
+}
+
+void paint(int ball_x, int ball_y) {
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
+            if ((x == ROCKET_1_X) && ((y == ROCKET_1_Y - 1) || (y == ROCKET_1_Y) ||
+                                      (y == ROCKET_1_Y + 1)) ||  // нарисовали положение левой ракетки
+                (x == ROCKET_2_X) && ((y == ROCKET_2_Y - 1) || (y == ROCKET_2_Y) ||
+                                      (y == ROCKET_2_Y + 1))) {  // нарисовали положение второй ракетки
+                printf("|");
+            } else if (x == ball_x && y == ball_y) {  // нарисовали мяч
+                printf("o");
+            } else if ((y == 0 && x != 0 && y != WIDTH) ||
+                       (y == HEIGHT - 1 && x != 0 &&
+                        x != WIDTH - 1)) {  // нарисовали верхнюю и нижнюю границу
+                printf("-");
+            } else if ((x == 0 && y != 0 && y != HEIGHT) ||
+                       (x == WIDTH - 1 && x != 0 && y != HEIGHT - 1 && y != 3) ||
+                       ((x == WIDTH / 2) && (y != 3)) ||
+                       (x == WIDTH - 1 && y == 3)) {  // нарисовали левую и правую границу
+                printf("|");
+            } else if ((x == WIDTH / 2 && y == 3)) {  // нарисовали середину
+                printf("|");
+            } else {
+                printf(" ");  // заполняем пробелами
+            }
+        }
+        printf("\n");  // переносим на новую стоку
+    }
+}
+
+//тут мы определяем функции движения мяча и ракетки
