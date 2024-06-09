@@ -16,16 +16,11 @@ void paint(int ball_x, int ball_y, int rocket_1_x, int rocket_1_y, int rocket_2_
 int clamp(int value, int min, int max);
 
 int main() {
-    int player_1 = 0;
-    int player_2 = 0;
-    int rocket_1_x = 1;
-    int rocket_1_y = ROCKET_1_Y;
-    int rocket_2_x = WIDTH - 1;
-    int rocket_2_y = ROCKET_2_Y;
-    int ball_x = BALL_START_X;
-    int ball_y = BALL_START_Y;
-    int vector_x = -1;
-    int vector_y = 1;
+    int player_1 = 0, player_2 = 0; 
+    int rocket_1_x = 1, rocket_1_y = ROCKET_1_Y;
+    int rocket_2_x = WIDTH - 1, rocket_2_y = ROCKET_2_Y;
+    int ball_x = BALL_START_X, ball_y = BALL_START_Y;
+    int vector_x = -1, vector_y = 1;
     char key = 48;
 
     while (1) {
@@ -53,8 +48,7 @@ int main() {
         rocket_1_y = clamp(rocket_1_y, 2, HEIGHT - 3);
         rocket_2_y = clamp(rocket_2_y, 2, HEIGHT - 3);
 
-        // далее описание движения мяча
-        if (ball_y == 1 || ball_y == HEIGHT - 2) {
+        if (ball_y == 1 || ball_y == HEIGHT - 2) { // далее описание движения мяча
             vector_y = -vector_y;  // меняет траекторию на противоположную при оси y при столкновении с верхней и нижней границами
         }
         if (ball_x == rocket_1_x + 1 &&
@@ -66,11 +60,9 @@ int main() {
             vector_x = -vector_x;  // смена траектории по оси Х при столкновении с правой ракеткой
         }
         ball_x += vector_x;
-        ball_y += vector_y;
-        // движение мяча всё
+        ball_y += vector_y; // движение мяча всё
 
-        // счёт
-        if (ball_x < 2) {
+        if (ball_x < 2) { // счёт
             player_2 += 1;
             ball_x = BALL_START_X;
             ball_y = BALL_START_Y;
@@ -88,7 +80,6 @@ int main() {
             break;
         }
     }
-
 }
 
 void paint(int ball_x, int ball_y, int rocket_1_x, int rocket_1_y, int rocket_2_x, int rocket_2_y) {
@@ -101,12 +92,12 @@ void paint(int ball_x, int ball_y, int rocket_1_x, int rocket_1_y, int rocket_2_
                 printf("|");
             } else if (x == ball_x && y == ball_y) {  // нарисовали мяч
                 printf("o");
-            } else if ((y == 0 && x != 0 && y != WIDTH) ||
+            } else if ((y == 0 && y != WIDTH) ||
                        (y == HEIGHT - 1 && x != 0 &&
                         x != WIDTH - 1)) {  // нарисовали верхнюю и нижнюю границу
                 printf("-");
             } else if ((x == 0 && y != 0 && y != HEIGHT) ||
-                       (x == WIDTH - 1 && x != 0 && y != HEIGHT - 1 && y != 3) ||
+                       (x == WIDTH - 1 && y != HEIGHT - 1 && y != 3) ||
                        ((x == WIDTH / 2) && (y != 3)) ||
                        (x == WIDTH - 1 && y == 3)) {  // нарисовали левую и правую границу
                 printf("|");
@@ -129,3 +120,4 @@ int clamp(int value, int min, int max) {  // проверяет не выход�
     }
     return flag;
 }
+
