@@ -4,8 +4,6 @@
 #define HEIGHT 25                  // высота поля
 #define BALL_START_X (WIDTH / 2)   // старт мяча по х
 #define BALL_START_Y (HEIGHT / 2)  // старт мяча по y
-#define SCORE_X 33                 // координаты очков по х
-#define SCORE_Y 3                  // координаты очков по y
 #define ROCKET_1_X 1               // левая ракетка по х
 #define ROCKET_2_X (WIDTH - 2)     // правая ракетка по х
 #define ROCKET_1_Y 12              // левая ракетка по y
@@ -20,12 +18,14 @@ int clamp(int value, int min, int max);
 int main() {
     int player_1 = 0;
     int player_2 = 0;
-    int rocket_1_x = ROCKET_1_X;
+    int rocket_1_x = 1;
     int rocket_1_y = ROCKET_1_Y;
-    int rocket_2_x = ROCKET_2_X;
+    int rocket_2_x = WIDTH - 1;
     int rocket_2_y = ROCKET_2_Y;
     int ball_x = BALL_START_X;
     int ball_y = BALL_START_Y;
+    int vector_x = -1;
+    int vector_y = 1;
     char key = 48;
 
     while (1) {
@@ -36,7 +36,7 @@ int main() {
         }
         key = getchar();
 
-        if (key == 'A') {
+        if (key == 'A') {  // проверяет какая команда пришла
             rocket_1_y--;
         } else if (key == 'Z') {
             rocket_1_y++;
@@ -44,15 +44,51 @@ int main() {
             rocket_2_y--;
         } else if (key == 'M') {
             rocket_2_y++;
+        } else if (key == ' ') {
+            continue;
         } else {
             key = 0;
         }
 
         rocket_1_y = clamp(rocket_1_y, 2, HEIGHT - 3);
         rocket_2_y = clamp(rocket_2_y, 2, HEIGHT - 3);
+
+        // далее описание движения мяча
+        if (ball_y == 1 || ball_y == HEIGHT - 2) {
+            vector_y = -vector_y;  // меняет траекторию на противоположную при оси y при столкновении с верхней и нижней границами
+        }
+        if (ball_x == rocket_1_x + 1 &&
+            (ball_y == rocket_1_y - 1 || ball_y == rocket_1_y || ball_y == rocket_1_y + 1)) {
+            vector_x = -vector_x;  // смена траектории по оси Х при столкновении с левой ракеткой
+        }
+        if (ball_x == rocket_2_x - 1 &&
+            (ball_y == rocket_2_y - 1 || ball_y == rocket_2_y || ball_y == rocket_2_y + 1)) {
+            vector_x = -vector_x;  // смена траектории по оси Х при столкновении с правой ракеткой
+        }
+        ball_x += vector_x;
+        ball_y += vector_y;
+        // движение мяча всё
+
+        // счёт
+        if (ball_x < 2) {
+            player_2 += 1;
+            ball_x = BALL_START_X;
+            ball_y = BALL_START_Y;
+        }
+        if (ball_x > WIDTH - 1) {
+            player_1 += 1;
+            ball_x = BALL_START_X;
+            ball_y = BALL_START_Y;
+        }
+        if (player_1 == WIN) {
+            printf("Победил первый игрок\n");
+            break;
+        } else if (player_2 == WIN) {
+            printf("Победил второй игрок\n");
+            break;
+        }
     }
-    // написать функцию для движения мяча
-    // написать функцию для движения ракеток
+
 }
 
 void paint(int ball_x, int ball_y, int rocket_1_x, int rocket_1_y, int rocket_2_x, int rocket_2_y) {
@@ -84,7 +120,7 @@ void paint(int ball_x, int ball_y, int rocket_1_x, int rocket_1_y, int rocket_2_
     }
 }
 
-int clamp(int value, int min, int max) {
+int clamp(int value, int min, int max) {  // проверяет не выходит ли ракетка за поле
     int flag = value;
     if (value < min) {
         flag = min;
